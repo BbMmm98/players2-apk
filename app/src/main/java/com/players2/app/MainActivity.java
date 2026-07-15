@@ -1,10 +1,8 @@
 package com.players2.app;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView statusText;
     private SwitchCompat switchCapture;
-    private Button testSmsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +24,6 @@ Intent serviceIntent = new Intent(this, ForegroundService.class);
 startService(serviceIntent);
         statusText = findViewById(R.id.statusText);
         switchCapture = findViewById(R.id.switchCapture);
-        testSmsButton = findViewById(R.id.testSmsButton);
 
         // === ЗАПРОС РАЗРЕШЕНИЙ ===
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
