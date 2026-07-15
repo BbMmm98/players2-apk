@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText tokenInput;
     private Button connectButton;
     private TextView statusText;
+    private SwitchCompat switchCapture;
     private String fcmToken = null;
 
     @Override
@@ -31,15 +33,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // === ИНИЦИАЛИЗАЦИЯ ===
         tokenInput = findViewById(R.id.tokenInput);
         connectButton = findViewById(R.id.connectButton);
         statusText = findViewById(R.id.statusText);
+        switchCapture = findViewById(R.id.switchCapture);
 
-        // Запуск фонового сервиса
+        // === ПЕРЕКЛЮЧАТЕЛЬ ===
+        switchCapture.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                statusText.setText("🟢 Активен");
+            } else {
+                statusText.setText("🔴 Остановлен");
+            }
+        });
+
+        // === ЗАПУСК ФОНОВОГО СЕРВИСА ===
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         startService(serviceIntent);
 
-        // Запрос разрешений
+        // === ЗАПРОС РАЗРЕШЕНИЙ ===
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -61,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "✅ FCM токен готов", Toast.LENGTH_SHORT).show();
                 } else {
                     statusText.setText("❌ Ошибка получения токена");
-                    Toast.makeText(this, "❌ Ошибка FCM: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "❌ Ошибка FCM", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -73,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            // Если токен ещё не получен, пробуем ещё раз
             if (fcmToken == null) {
                 fcmToken = getSharedPreferences("app", MODE_PRIVATE)
                         .getString("fcm_token", null);
