@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import okhttp3.*;
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText tokenInput;
     private Button connectButton;
     private TextView statusText;
+    private String fcmToken = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
                     100);
         }
 
+        // === ПРИНУДИТЕЛЬНЫЙ ЗАПРОС FCM ТОКЕНА ===
+        statusText.setText("🔄 Получение токена...");
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    fcmToken = task.getResult();
+                    getSharedPreferences("app", MODE_PRIVATE)
+                        .edit()
+                        .putString("fcm_token", fcmToken)
+                        .apply();
+                    statusText.setText("✅ Токен получен");
+                    Toast.makeText(this, "✅ FCM токен готов", Toast.LENGTH_SHORT).show();
+                } else {
+                    statusText.setText("❌ Ошибка получения токена");
+                    Toast.makeText(this, "❌ Ошибка FCM: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
         // === ПРИВЯЗКА УСТРОЙСТВА ===
         connectButton.setOnClickListener(v -> {
             String token = tokenInput.getText().toString().trim();
@@ -52,12 +73,15 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            String fcmToken = getSharedPreferences("app", MODE_PRIVATE)
-                    .getString("fcm_token", null);
+            // Если токен ещё не получен, пробуем ещё раз
+            if (fcmToken == null) {
+                fcmToken = getSharedPreferences("app", MODE_PRIVATE)
+                        .getString("fcm_token", null);
+            }
 
             if (fcmToken == null) {
                 statusText.setText("❌ Токен FCM не получен");
-                Toast.makeText(this, "Подождите 10 секунд, FCM ещё не готов", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Подождите 10 секунд и попробуйте снова", Toast.LENGTH_LONG).show();
                 return;
             }
 
