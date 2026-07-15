@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         Request request = new Request.Builder()
-                .url("https://players2pay.com/api/device/register")
+        .url("https://players2pay.com/api/device/register")
                 .post(body)
                 .build();
 
