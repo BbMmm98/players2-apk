@@ -16,57 +16,45 @@
         android:textColor="#D4AF37"
         android:textStyle="bold"
         android:fontFamily="monospace"
-        android:layout_marginTop="60dp"/>
+        android:layout_marginTop="40dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Trader APK"
+        android:text="Привязка устройства"
         android:textSize="16sp"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="80dp"/>
+        android:layout_marginBottom="40dp"/>
+
+    <!-- Поле для ввода токена -->
+    <EditText
+        android:id="@+id/tokenInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите токен из личного кабинета"
+        android:inputType="textVisiblePassword"
+        android:backgroundTint="#D4AF37"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#666666"
+        android:padding="16dp"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Привязать устройство"
+        android:textColor="#0F0F0F"
+        android:backgroundTint="#D4AF37"
+        android:padding="16dp"/>
 
     <TextView
         android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="⏳ Ожидание..."
-        android:textSize="18sp"
+        android:text="⏳ Ожидание привязки..."
+        android:textSize="16sp"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="40dp"/>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Активен"
-            android:textColor="#8A8A8A"
-            android:textSize="16sp"
-            android:layout_marginEnd="16dp"/>
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchCapture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            app:thumbTint="#D4AF37"
-            app:trackTint="#444444"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Перехват SMS в фоне"
-        android:textSize="14sp"
-        android:textColor="#666666"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="60dp"/>
-
+        android:layout_marginTop="30dp"/>
 
 </LinearLayout>
