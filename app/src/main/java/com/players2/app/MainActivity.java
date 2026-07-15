@@ -1,15 +1,22 @@
 package com.players2.app;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView statusText;
     private SwitchCompat switchCapture;
+    private Button testSmsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,15 +25,52 @@ public class MainActivity extends AppCompatActivity {
 
         statusText = findViewById(R.id.statusText);
         switchCapture = findViewById(R.id.switchCapture);
+        testSmsButton = findViewById(R.id.testSmsButton);
 
+        // === ЗАПРОС РАЗРЕШЕНИЙ ===
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS},
+                    100);
+        } else {
+            statusText.setText("🟢 Доступ к SMS есть");
+        }
+
+        // === ПЕРЕКЛЮЧАТЕЛЬ ===
         switchCapture.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 statusText.setText("🟢 Активен");
-                // Включить перехват
+                Toast.makeText(this, "Перехват включён", Toast.LENGTH_SHORT).show();
             } else {
                 statusText.setText("🔴 Остановлен");
-                // Выключить перехват
+                Toast.makeText(this, "Перехват выключен", Toast.LENGTH_SHORT).show();
             }
         });
+
+        // === ТЕСТОВАЯ КНОПКА ===
+        testSmsButton.setOnClickListener(v -> {
+            // Эмуляция получения SMS
+            String testMessage = "SMS: 123456";
+            statusText.setText("📩 Получен код 123456");
+            Toast.makeText(this, "🧪 Имитация SMS: 123456", Toast.LENGTH_SHORT).show();
+
+            // Здесь потом отправим на сервер
+        });
+    }
+
+    // === ОБРАБОТКА ОТВЕТА ПОЛЬЗОВАТЕЛЯ НА РАЗРЕШЕНИЯ ===
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                statusText.setText("🟢 Доступ к SMS есть");
+                Toast.makeText(this, "✅ Доступ к SMS разрешён", Toast.LENGTH_SHORT).show();
+            } else {
+                statusText.setText("🔴 Нет доступа к SMS");
+                Toast.makeText(this, "❌ Без доступа к SMS приложение не будет работать", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
