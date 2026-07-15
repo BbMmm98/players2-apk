@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1017273367517",
+    "project_id": "players2-push",
+    "storage_bucket": "players2-push.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017273367517:android:c173f63ad314fd9a7d5434",
+        "android_client_info": {
+          "package_name": "com.players2.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1xwlSWsatCrDAbFmzSIDEbkQMrJj5XrI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
