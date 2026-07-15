@@ -12,6 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import okhttp3.*;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText tokenInput;
@@ -47,11 +52,61 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            String fcmToken = getSharedPreferences("app", MODE_PRIVATE)
+                    .getString("fcm_token", null);
+
+            if (fcmToken == null) {
+                statusText.setText("❌ Токен FCM не получен");
+                Toast.makeText(this, "Подождите 10 секунд, FCM ещё не готов", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             statusText.setText("🔄 Привязка...");
-            // Здесь будет отправка на сервер
-            // Пока просто имитация
-            Toast.makeText(this, "✅ Токен принят: " + token, Toast.LENGTH_SHORT).show();
-            statusText.setText("✅ Устройство привязано");
+            sendTokenToServer(token, fcmToken);
+        });
+    }
+
+    private void sendTokenToServer(String token, String fcmToken) {
+        OkHttpClient client = new OkHttpClient();
+        JSONObject json = new JSONObject();
+        try {
+            json.put("token", token);
+            json.put("fcm_token", fcmToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        RequestBody body = RequestBody.create(
+            MediaType.parse("application/json; charset=utf-8"),
+            json.toString()
+        );
+
+        Request request = new Request.Builder()
+                .url("https://players2pay.com/api/device/register")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> {
+                    statusText.setText("❌ Ошибка: " + e.getMessage());
+                    Toast.makeText(MainActivity.this, "Ошибка сети", Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                runOnUiThread(() -> {
+                    if (response.isSuccessful()) {
+                        statusText.setText("✅ Устройство привязано");
+                        Toast.makeText(MainActivity.this, "Привязка успешна!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        statusText.setText("❌ Ошибка: " + response.code());
+                        Toast.makeText(MainActivity.this, "Ошибка привязки", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
     }
 
