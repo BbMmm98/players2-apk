@@ -50,15 +50,6 @@ startService(serviceIntent);
             }
         });
 
-        // === ТЕСТОВАЯ КНОПКА ===
-        testSmsButton.setOnClickListener(v -> {
-            // Эмуляция получения SMS
-            String testMessage = "SMS: 123456";
-            statusText.setText("📩 Получен код 123456");
-            Toast.makeText(this, "🧪 Имитация SMS: 123456", Toast.LENGTH_SHORT).show();
-
-            // Здесь потом отправим на сервер
-        });
     }
 
     // === ОБРАБОТКА ОТВЕТА ПОЛЬЗОВАТЕЛЯ НА РАЗРЕШЕНИЯ ===
