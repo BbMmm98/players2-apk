@@ -9,12 +9,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d("FCM", "Получено сообщение: " + remoteMessage.getData());
-        // Тут будет логика: прочитать SMS и отправить подтверждение
     }
 
     @Override
     public void onNewToken(String token) {
         Log.d("FCM", "Новый токен: " + token);
-        // Отправить токен на сервер
+        // Сохраняем токен локально, чтобы отправить при привязке
+        getSharedPreferences("app", MODE_PRIVATE)
+            .edit()
+            .putString("fcm_token", token)
+            .apply();
     }
 }
